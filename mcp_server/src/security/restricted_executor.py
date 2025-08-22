@@ -13,6 +13,7 @@ class RestrictedPythonExecutor:
             '_getitem_': lambda obj, key: obj[key],
             '_getiter_': iter,
             'polars': pl,
+            'pl': pl,  # Add pl alias as well
         }
 
     def execute(self, code_string, extra_globals=None):

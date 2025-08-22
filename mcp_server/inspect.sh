@@ -1,1 +1,1 @@
-uv run python src/api/server.py | npx @modelcontextprotocol/inspector
+npx @modelcontextprotocol/inspector

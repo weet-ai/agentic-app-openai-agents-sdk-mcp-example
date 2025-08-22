@@ -65,21 +65,38 @@ class ExecutionResultSerializer:
         """
         Convert a value to a JSON-serializable format.
         """
+        print(f"[DEBUG SERIALIZER] _serialize_value called with type: {type(value)}")
+        print(f"[DEBUG SERIALIZER] Value string representation: {str(value)[:200]}...")
+        
         try:
             # Handle polars DataFrames
             if hasattr(value, '__class__') and 'polars' in str(type(value)):
+                print(f"[DEBUG SERIALIZER] Detected polars DataFrame")
                 if hasattr(value, 'to_dict'):
-                    return {
+                    print(f"[DEBUG SERIALIZER] DataFrame has to_dict method")
+                    data_dict = value.to_dict(as_series=False)
+                    shape = value.shape
+                    result = {
                         "type": "polars.DataFrame",
-                        "data": value.to_dict(as_series=False),
-                        "shape": value.shape
+                        "data": data_dict,
+                        "shape": shape
                     }
+                    print(f"[DEBUG SERIALIZER] Serialized DataFrame: {result}")
+                    return result
+                else:
+                    print(f"[DEBUG SERIALIZER] DataFrame missing to_dict method")
+            else:
+                print(f"[DEBUG SERIALIZER] Not a polars DataFrame")
             
-            return {
+            # Fallback for other types
+            result = {
                 "type": str(type(value).__name__),
                 "value": str(value)
             }
+            print(f"[DEBUG SERIALIZER] Fallback serialization: {result}")
+            return result
             
-        except Exception:
+        except Exception as e:
+            print(f"[DEBUG SERIALIZER] Exception in _serialize_value: {e}")
             # Fallback to string representation
             return str(value)

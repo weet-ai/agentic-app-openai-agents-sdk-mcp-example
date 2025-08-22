@@ -1,50 +1,39 @@
-# Use Python 3.13 slim as build stage
-FROM python:3.13-slim AS builder
+FROM ghcr.io/astral-sh/uv:bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# Configure the Python directory so it is consistent
+ENV UV_PYTHON_INSTALL_DIR=/python
 
-# Create a non-root user for building
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+# Only use the managed Python version
+ENV UV_PYTHON_PREFERENCE=only-managed
 
-# Set working directory
+# Install Python before the project for caching
+RUN uv python install 3.13
+
 WORKDIR /app
-
-# Copy requirements first for better caching
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir --user -r requirements.txt
-
-# Copy application code
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev --no-editable
 COPY . .
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --no-editable
 
-# Change ownership to non-root user
-RUN chown -R appuser:appuser /app
+# Then, use a final image without uv
+FROM gcr.io/distroless/cc
 
-# Production stage using distroless
-FROM gcr.io/distroless/python3-debian12:latest
+# Copy the Python version
+COPY --from=builder --chown=python:python /python /python
 
-# Copy Python packages from builder stage
-COPY --from=builder /root/.local /home/nonroot/.local
-
-# Copy application code from builder stage
-COPY --from=builder --chown=nonroot:nonroot /app /app
-
-# Set working directory
 WORKDIR /app
+# Copy the application from the builder
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+COPY --from=builder --chown=app:app /app/src /app/src
 
-# Update PATH to include user packages
-ENV PATH="/home/nonroot/.local/bin:${PATH}"
-ENV PYTHONPATH="/app/.venv/bin:/app/"
+# Place executables in the environment at the front of the path
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONPATH="/app/"
 
-# Use non-root user (built into distroless)
-USER nonroot
-
-# Expose port (adjust as needed)
 EXPOSE 8000
 
-# Set entrypoint
-ENTRYPOINT ["python3", "mcp", "run", "server.py", "--transport", "http"]
+CMD ["python", "src/api/server.py"]

@@ -7,7 +7,7 @@ import logging
 
 logging.basicConfig(level = "DEBUG")
 
-TRANSPORT = os.getenv("TRANSPORT", "streamable-http")
+TRANSPORT = os.getenv("TRANSPORT", "http")
 mcp = FastMCP("Data Analysis MCP Server")
 
 @mcp.tool
@@ -66,5 +66,5 @@ async def code_executor(code: str):
         return {"status": "error", "message": str(e)}
 
 if __name__ == "__main__":
-    mcp.run(transport=TRANSPORT)
+    mcp.run(transport=TRANSPORT, host="0.0.0.0", port=8000)
 
