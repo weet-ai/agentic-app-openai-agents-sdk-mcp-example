@@ -54,11 +54,11 @@ data_analyst_agent = Agent(
             -> INCORRECT:
             'Here is the code to compute the average employee salary per department using Polars:
                 \n\n```python\ndf = pl.read_csv(\"./data/employee_data.csv\")
-                result = df.groupby(\"department\").agg(pl.col(\"salary\").mean().alias(\"average_salary\"))\nresult\n
+                result = df.group_by(\"department\").agg(pl.col(\"salary\").mean().alias(\"average_salary\"))\nresult\n
                 ```\n\nYou can run this code to get the average salary for each department.
             -> CORRECT:
                 lazy_df = pl.scan_csv(\"./data/employee_data.csv\") # Lazyframe
-                result = df.groupby(\"department\").agg(pl.col(\"salary\").mean().alias(\"average_salary\")).collect()
+                result = df.group_by(\"department\").agg(pl.col(\"salary\").mean().alias(\"average_salary\")).collect()
                 result
             -> INCORRECT:
                 import polars as pl # <- polars is already imported as pl!

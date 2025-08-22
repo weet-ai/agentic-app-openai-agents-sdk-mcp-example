@@ -27,7 +27,6 @@ def get_mcp_server(allowed_tool_names: List[str], url: str = MCP_SERVER_URL, tim
 
 
 def get_mcp_config() -> MCPConfig:
-
     return MCPConfig(
         tls_key_file=TLS_KEY_FILE,
         tls_cert_file=TLS_CERT_FILE,

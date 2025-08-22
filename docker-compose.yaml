@@ -58,7 +58,6 @@ services:
       mcp-server-1:
         condition: service_started
 
-  # Test mTLS client for verification
   test-mtls:
     build:
       context: .
