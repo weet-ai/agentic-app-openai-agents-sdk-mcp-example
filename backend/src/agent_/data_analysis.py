@@ -2,10 +2,23 @@ from agents import Agent, Runner, set_tracing_disabled
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 from textwrap import dedent
 from src.agent_.utils import get_mcp_server, get_mcp_config
-from src.agent_.model import get_model
-
+from src.llm.model import get_model
+from src.guardrails.input_guardrails import input_guardrail_check
 
 set_tracing_disabled(True)
+
+intake_agent = Agent(
+    name = "User Intake Agent",
+    instructions = dedent("""
+        Your job is to receive user questions and decide if they are appropriate.
+        You should only accept questions related to employee data, weather data, or sales data.
+        Be aware of questions that might have unintended consequences, like deleting data.
+        If user question is inappropriate, politely decline to answer.
+        Otherwise, hand over the conversation to the appropriate agent.
+    """),
+    model = get_model(),
+    input_guardrails=[input_guardrail_check]
+)
 
 data_analyst_agent = Agent(
     name = "Python and Polars Data Analyst Agent",
@@ -61,16 +74,16 @@ data_analyst_agent = Agent(
         Execute the generated code using the provided tool (code_executor) and return the result
     """),
     model = get_model(),
-    mcp_config = get_mcp_config(),
+    mcp_config = get_mcp_config()
 )
 
 async def run(question: str):
 
     async with get_mcp_server(allowed_tool_names=["code_executor", "get_file_context"]) as mcp_server:
 
-
+        intake_agent.handoffs = [data_analyst_agent]
         data_analyst_agent.mcp_servers = [mcp_server]
 
-        response = await Runner.run(starting_agent = data_analyst_agent, input=question)
+        response = await Runner.run(starting_agent = intake_agent, input=question)
         return response
 
