@@ -1,0 +1,70 @@
+{
+  "name": "Data Analysis MCP Server",
+  "instructions": null,
+  "fastmcp_version": "2.11.3",
+  "mcp_version": "1.13.1",
+  "server_version": null,
+  "tools": [
+    {
+      "key": "get_file_context",
+      "name": "get_file_context",
+      "description": "Reads files with the target extension and tries to fetch its headers.\n\nArgs:\n    path (str): The file path to read.\n    extension (str, optional): The file extension to filter by. Defaults to \"csv\".\n\nReturns:\n    List[dict]: A list of dictionaries containing the file headers.\n    Example:\n        [\n            {\"file\": \"employees.csv\", \"headers\": [\"name\", \"salary\"]},\n            {\"file\": \"weather.csv\", \"headers\": [\"location\", \"degrees\", \"date\"]}\n        ]\nRaises:\n    FileNotFoundError: If the path is not found or has no files.",
+      "input_schema": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "extension": {
+            "default": "csv",
+            "title": "Extension",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      },
+      "annotations": null,
+      "tags": null,
+      "enabled": true
+    },
+    {
+      "key": "code_executor",
+      "name": "code_executor",
+      "description": "Executes user-provided code in a restricted environment.\n\nArgs:\n    code (str): The user-provided code to execute.\nReturns:\n    dict: The result of the executed code or an error message.",
+      "input_schema": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      },
+      "annotations": null,
+      "tags": null,
+      "enabled": true
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "templates": [],
+  "capabilities": {
+    "tools": {
+      "listChanged": true
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": false
+    },
+    "prompts": {
+      "listChanged": false
+    },
+    "logging": {}
+  }
+}
