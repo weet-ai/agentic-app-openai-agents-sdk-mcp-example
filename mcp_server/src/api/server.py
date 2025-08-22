@@ -1,17 +1,21 @@
 from fastmcp import FastMCP
-import glob
 from typing import List
 import os
 from src.security.pipeline import SecureCodePipeline
 import logging
+import pathlib
+import os
+
+
 
 logging.basicConfig(level = "DEBUG")
 
-TRANSPORT = os.getenv("TRANSPORT", "http")
+MCP_TRANSPORT = os.getenv("MCP_TRANSPORT", "http")
+
 mcp = FastMCP("Data Analysis MCP Server")
 
 @mcp.tool
-async def get_file_context(path: str, extension: str = "csv") -> List[dict]:
+async def get_file_context(path: str = "./data", extension: str = "csv") -> List[dict]:
     """
         Reads files with the target extension and tries to fetch its headers.
 
@@ -30,18 +34,22 @@ async def get_file_context(path: str, extension: str = "csv") -> List[dict]:
             FileNotFoundError: If the path is not found or has no files.
     """
 
-    headers = []
-    file_list = glob.glob(f"{path}/*.{extension}")
+    file_headers = []
+    path = pathlib.Path(path)
+    logging.info(f"Looking for files in {path} with extension {extension}")
+    file_list = [f for f in os.listdir(path) if f.endswith(f".{extension}")]
+    logging.info(f"Found files: {file_list}")
 
-    if not file_list:
-        raise FileNotFoundError(f"No files found in {path} with extension {extension}")
-    
+    if len(file_list) == 0:
+        logging.warning(f"No files found in {path} with extension {extension}")
+
     for file in file_list:
-        with open(file, "r") as f:
+        with open(os.path.join(path, file), "r") as f:
             headers = f.readline().strip().split(",")
-            headers.append({"file": file, "headers": headers})
+            file_headers.append({"file": file, "headers": headers})
 
-    return headers
+    logging.info(f"File headers found: {file_headers}")
+    return file_headers
 
 @mcp.tool
 async def code_executor(code: str):
@@ -66,5 +74,9 @@ async def code_executor(code: str):
         return {"status": "error", "message": str(e)}
 
 if __name__ == "__main__":
-    mcp.run(transport=TRANSPORT, host="0.0.0.0", port=8000)
+    
+    # Simply run without the middleware for now
+    # The ProxyHeadersMiddleware is mainly needed when behind a reverse proxy
+    # Since we're handling TLS termination at NGINX level, we can skip this
+    mcp.run(transport=MCP_TRANSPORT, host="0.0.0.0", port=8000)
 

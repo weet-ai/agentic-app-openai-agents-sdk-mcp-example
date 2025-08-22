@@ -6,10 +6,10 @@ class ASTSafetyAnalyzer(ast.NodeVisitor):
         self.allowed_imports = allowed_imports or {'polars'}
         self.allowed_calls = allowed_calls or {
             'print', 'len', 'sum', 'min', 'max', 'abs', 'range',
-            'read_csv',
-            'DataFrame', 'select', 'filter', 'groupby', 'agg', 'join',
+            'read_csv', 'scan_csv', 'col', 'alias',
+            'DataFrame', 'LazyFrame', 'select', 'filter', 'groupby', 'group_by', 'agg', 'join',
             'with_column', 'drop', 'sort', 'collect', 'to_pandas', 'to_numpy',
-            'mean', 'median', 'std', 'var'
+            'mean', 'median', 'std', 'var', 'count', 'unique', 'head', 'tail'
         }
         self.unsafe = []
 

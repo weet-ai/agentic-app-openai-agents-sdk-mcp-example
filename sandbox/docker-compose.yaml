@@ -1,0 +1,49 @@
+version: '3.8'
+
+volumes:
+  certs-data:
+
+networks:
+  app-net:
+
+services:
+  cert-generator:
+    build: ./cert-generator
+    volumes:
+      - certs-data:/certs
+    networks:
+      - app-net
+
+  app-container-1:
+    build: ./client
+    volumes:
+      - certs-data:/etc/certs:ro
+    depends_on:
+      - container-2
+      - container-3
+    networks:
+      - app-net
+
+  container-2:
+    image: nginx:latest
+    volumes:
+      - certs-data:/etc/nginx/certs:ro
+      - ./nginx-mtls.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8443:443"
+    depends_on:
+      - cert-generator
+    networks:
+      - app-net
+
+  container-3:
+    image: nginx:latest
+    volumes:
+      - certs-data:/etc/nginx/certs:ro
+      - ./nginx-nomtls.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8444:443"
+    depends_on:
+      - cert-generator
+    networks:
+      - app-net

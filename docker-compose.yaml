@@ -1,7 +1,12 @@
+networks:
+  app-network:
+    driver: bridge
+
 services:
-  mcp-server:
+  mcp-server-1:
     build:
-      context: ./mcp_server
+      context: .
+      dockerfile: ./mcp_server/Dockerfile
     ports:
       - "8000:8000"
     networks:
@@ -19,8 +24,49 @@ services:
     networks:
       - app-network
     depends_on:
-      - mcp-server
+      mcp-server-1:
+        condition: service_started
 
-networks:
-  app-network:
-    driver: bridge
+  agentic-app:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "7001:7000"
+    environment:
+      - HOST=0.0.0.0
+      - MCP_SERVER_URL=https://nginx-proxy/mcp
+      - TLS_CERT_FILE=/app/certs/agentic-app.crt
+      - TLS_KEY_FILE=/app/certs/agentic-app.key
+      - TLS_CA_FILE=/app/certs/ca.crt
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+    networks:
+      - app-network
+    env_file: .env
+
+  nginx-proxy:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "8443:443"
+    networks:
+      - app-network
+    depends_on:
+      mcp-server-1:
+        condition: service_started
+
+  # Test mTLS client for verification
+  test-mtls:
+    build:
+      context: .
+      dockerfile: ./test-mtls-client/Dockerfile
+    networks:
+      - app-network
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+    profiles:
+      - test

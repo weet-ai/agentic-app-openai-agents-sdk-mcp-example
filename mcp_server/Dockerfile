@@ -11,11 +11,23 @@ ENV UV_PYTHON_PREFERENCE=only-managed
 RUN uv python install 3.13
 
 WORKDIR /app
+
+# Create certs directory
+RUN mkdir -p /app/certs
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=mcp_server/uv.lock,target=uv.lock \
+    --mount=type=bind,source=mcp_server/pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --no-dev --no-editable
-COPY . .
+
+# Copy application code
+COPY mcp_server/ .
+
+# Copy certificates into builder stage
+COPY ca.crt /app/certs/
+COPY server.crt /app/certs/
+COPY server.key /app/certs/
+
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --no-editable
 
@@ -29,6 +41,10 @@ WORKDIR /app
 # Copy the application from the builder
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app/src /app/src
+COPY --from=builder --chown=app:app /app/data /app/data
+
+# Copy certificates from builder
+COPY --from=builder --chown=app:app /app/certs /app/certs
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
