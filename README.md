@@ -12,7 +12,7 @@ This repo is part of the materials for our [Enterprise Agents Course](https://bu
 
 ## Demo
 
-<img style="width: 100%;" src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.gif" />
+<img width="100%" height="auto" src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.gif" />
 
 ## Purpose of this repo
 
