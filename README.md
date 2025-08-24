@@ -1,4 +1,13 @@
-# OpenAI Agents SDK & Streamable MCP Example
+# OpenAI Agents SDK, Dynamic Code Execution & Streamable MCP Example
+
+This repo is part of the materials for our [Enterprise Agents Course](https://buildingaiagents.com)
+
+## Demo
+
+<video width="640" height="240" controls>
+  <source src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ## Purpose of this repo
 
@@ -108,11 +117,11 @@ Our agentic app is configured to connect to an MCP server exposed by our NGINX r
 
 - MCP Inspector is part of our Docker Compose setup. Different from `mcp-server` and `backend` containers, this container doesn't bake the TLS certificates and keys. As a result, attempts at connecting to the NGINX reverse proxy that is used for exposing our MCP Server do not work:
 
-[screenshot]
+<img src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/inspector_http.png?raw=true" />
 
 **Observation**: since we 1. don't restrict network connections and 2. perform TLS termination at the reverse proxy, pointing MCP Inspector directly to our MCP server at port 8000 will allow connetions (see below). In an ideal scenario, you would block HTTP connections via network policy or service mesh tooling, like envoy sidecars for instance.
 
-[screenshot]
+<img src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/inspector_https.png?raw=true" />
 
 ---
 
