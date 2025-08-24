@@ -6,7 +6,7 @@
 ## Key Features
 
 - **End-to-end example** of using [OpenAI's Agents SDK](https://openai.github.io/openai-agents-python/quickstart/) with [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) using [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http)
-- ** Minimal Sandbox environment for dynamic code execution**
+- **Minimal Sandbox environment** for dynamic code execution
 - **[Mutual TLS (mTLS)](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-tls/)** support for secure and authenticated client-server communication
 - [Docker Compose](https://docs.docker.com/compose/) setup, with separate containers for each service
 
