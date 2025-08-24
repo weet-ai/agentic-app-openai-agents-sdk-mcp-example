@@ -4,10 +4,8 @@ This repo is part of the materials for our [Enterprise Agents Course](https://bu
 
 ## Demo
 
-<video width="640" height="240" controls>
-  <source src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<img src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.gif" />
+
 
 ## Purpose of this repo
 
