@@ -24,9 +24,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY mcp_server/ .
 
 # Copy certificates into builder stage
-COPY ca.crt /app/certs/
-COPY server.crt /app/certs/
-COPY server.key /app/certs/
+COPY certs/ca.crt /app/certs/
+COPY certs/server.crt /app/certs/
+COPY certs/server.key /app/certs/
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --no-editable
@@ -38,6 +38,7 @@ FROM gcr.io/distroless/cc
 COPY --from=builder --chown=python:python /python /python
 
 WORKDIR /app
+
 # Copy the application from the builder
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app/src /app/src

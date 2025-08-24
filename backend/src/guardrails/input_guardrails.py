@@ -51,6 +51,6 @@ async def input_guardrail_check(
     result = await Runner.run(guardrail_agent, input, context=ctx.context)
     logging.info(f"[DEBUG] Guardrail check result: {result}")
     return GuardrailFunctionOutput(
-        output_info=result.final_output, 
+        output_info=result.final_output,
         tripwire_triggered=result.final_output.is_safe is False
     )

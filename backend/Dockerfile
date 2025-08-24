@@ -8,9 +8,9 @@ RUN mkdir -p /app/certs
 COPY backend/ .
 
 # Copy certificates from build context
-COPY ca.crt /app/certs/
-COPY agentic-app.crt /app/certs/
-COPY agentic-app.key /app/certs/
+COPY certs/ca.crt /app/certs/
+COPY certs/agentic-app.crt /app/certs/
+COPY certs/agentic-app.key /app/certs/
 
 # Set proper permissions for certificates
 RUN chmod 644 /app/certs/ca.crt /app/certs/agentic-app.crt && \
