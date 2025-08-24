@@ -2,10 +2,17 @@
 
 This repo is part of the materials for our [Enterprise Agents Course](https://buildingaiagents.com)
 
+## Key Features
+
+- **End-to-end example** of using OpenAI's Agents SDK with MCP
+- **Integration** with a [Streamable MCP server](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) in a Dockerized environment
+- ** Minimal Sandbox environment for dynamic code execution**
+- **[Mutual TLS (mTLS)](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-tls/)** support for secure and authenticated client-server communication
+- [Docker Compose](https://docs.docker.com/compose/) setup with service dependency ordering and custom networks
+
 ## Demo
 
-<img src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.gif" />
-
+<img style="width: 100%;" src="https://github.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/blob/main/assets/mtls_mcp_openai.gif" />
 
 ## Purpose of this repo
 
@@ -47,12 +54,7 @@ This combination of the OpenAI Agents SDK’s dynamic tool execution with a secu
 
 ---
 
-## Key Features
 
-- **End-to-end example** of using OpenAI's Agents SDK with MCP
-- **Integration** with a [Streamable MCP server](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) in a Dockerized environment
-- **[Mutual TLS (mTLS)](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-tls/)** support for secure and authenticated client-server communication
-- [Docker Compose](https://docs.docker.com/compose/) setup with service dependency ordering and custom networks
 
 ## Overview
 
