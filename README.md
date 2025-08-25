@@ -92,7 +92,7 @@ In mTLS, however, both the client and server have a certificate, and both sides 
 5. **Server verifies the client's certificate**
 6. **Server grants access**
 
-<img width="100%" height="auto" src="how_mtls_works-what_is_mutual_tls.webp" />
+<img width="100%" height="auto" src="https://raw.githubusercontent.com/weet-ai/agentic-app-openai-agents-sdk-mcp-example/refs/heads/main/assets/how_mtls_works-what_is_mutual_tls.webp" />
 
 
 ## Important Notes
